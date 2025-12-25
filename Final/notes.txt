@@ -1,0 +1,48 @@
+Set sumo home: $env:SUMO_HOME = "C:\Program Files (x86)\Eclipse\Sumo"
+check: echo $env:SUMO_HOME
+
+
+convert the osm -> xml : netconvert --osm-files map.osm --output-file milwaukee_i94_raw.net.xml
+
+open the network in netedit: netedit -s I94EW.net.xml
+
+Highway: type: motorway
+On Ramp: type: motorway_link (upwards)
+OFF Ramo: type = motorway_link (downwards)
+
+I94EW: 
+Entry: far left: 53187125
+Exit: far right: 518352630
+On ramp: 727098411
+off ramp: 726591145
+
+Mainline: 53187125(start), 99457879, 99457861, 99457865, 1447866124, 99457871, 1040199894, 99457868, 99457881, 99457867, 1040187307, 1040187306, 54582833, 54582832, 998964264, 1040190012, 54618319, 726591114, 726591113, 726591150, 726591149, 103504797, 103504792, 103504816, 103504815, 50487000, 518352630(end). 
+on-ramp: 727098411(start), 178570538#0, 178570538#1, 727098410, 103504788, 50487000(mainline edge). 
+offramp: 54641968(mainline edge), 726591116, 726591115, 19069383, 726591112, 726591111, 726591146, 726591144, 726591143, 726591145 (end)
+
+For each pedestrian, crossing, crossing time, T_"cross"  (p) is computed by  W/V_ped  , where W is the crosswalk width and v_ped is the pedestrian speed. 
+
+
+run simulation: sumo -n I94EW.net.xml -r demand_low.rou.xml --summary-output summary_low.xml --tripinfo-output tripinfo_low.xml
+
+
+
+
+sumo -c scenario1_ca.sumocfg --tripinfo-output tripinfo_low.xml --summary-output summary_low.xml --emission-output emissions_low.xml --lanechange-output lanechanges_low.xml --queue-output queue_low.xml --duration-log.statistics
+
+run with edge data enabled: sumo -c scenario1_ca.sumocfg --tripinfo-output tripinfo_low.xml --summary-output summary_low.xml
+
+
+sumo-gui -c cleaned_I94.sumocfg --tripinfo-output "low/tripinfo_low.xml" --summary-output "low/summary_low.xml" --edgedata-output "low/edgedata_low.xml" --lanechange-output "low/lanechanges_low.xml"
+
+sumo-gui -c cleaned_I94.sumocfg --tripinfo-output "low/tripinfo_low.xml" --summary-output "low/summary_low.xml" --edgedata-output "low/edgedata_low.xml" --edgedata-output.period 60 --lanechange-output "low/lanechanges_low.xml"
+
+
+sumo-gui -c I94_low.sumocfg --tripinfo-output low\tripinfo.xml --summary-output low\summary.xml --statistic-output low\stats.xml --edgedata-output low\edgedata.xml --lanechange-output low\lanechange.xml --fcd-output low\fcd.xml --fcd-output.attributes "lane,pos,speed" --emission-output low\emissions.xml --queue-output low\queue.xml --vehroute-output low\vehroute.xml --duration-log.statistics --device.rerouting.probability 1.0 --time-to-teleport -1
+
+sumo-gui -c I94_mid.sumocfg --tripinfo-output "mid/tripinfo.xml" --summary-output "mid/summary.xml" --statistic-output "mid/stats.xml" --edgedata-output "mid/edgedata.xml" --lanechange-output "mid/lanechange.xml" --fcd-output "mid/fcd.xml" --fcd-output.attributes "lane,pos,speed" --emission-output "mid/emissions.xml" --queue-output "mid/queue.xml" --vehroute-output "mid/vehroute.xml" --duration-log.statistics --device.rerouting.probability 1.0 --time-to-teleport -1
+
+sumo-gui -c I94_high.sumocfg --tripinfo-output "high/tripinfo.xml" --summary-output "high/summary.xml" --statistic-output "high/stats.xml" --edgedata-output "high/edgedata.xml" --lanechange-output "high/lanechange.xml" --fcd-output "high/fcd.xml" --fcd-output.attributes "lane,pos,speed" --emission-output "high/emissions.xml" --queue-output "high/queue.xml" --vehroute-output "high/vehroute.xml" --duration-log.statistics --device.rerouting.probability 1.0 --time-to-teleport -1
+
+
+

@@ -1,0 +1,38 @@
+Preprocessing and simulation for Task 4.
+Commands are for Windows operating system.
+
+
+Preprocessing:
+First open terminal in the root folder.
+Set sumo home: $env:SUMO_HOME = "C:\Program Files (x86)\Eclipse\Sumo"
+check: echo $env:SUMO_HOME
+
+Convert the osm -> network file: netconvert --osm-files map.osm --output-file filename_raw.net.xml
+
+Open the network in netedit: netedit -s filename_raw.net.xml
+
+Preprocessing consists of cleaning up the local roads, unnecessary highway link, ramps, etc.
+For understanding
+Highway: type: motorway
+On Ramp: type: motorway_link (upwards)
+OFF Ramo: type = motorway_link (downwards)
+
+For current used network: Default-priority-network.net.xml (is present in every demand folder)
+
+Simulation Run:
+For each demand: 
+Light: go to light folder: "cd Light"
+run "sumo -c I94_low-default-priority.net.sumocfg" 
+It will store all the output files in "Output-Default-Priority" folder 
+and detector files to "Detector-files" folder
+
+Medium: go to Medium folder: "cd Medium"
+run "sumo -c I94_mid-default-priority.net.sumocfg" 
+It will store all the output files in "Output-Default-Priority" folder 
+and detector files to "Detector-files" folder
+
+Heavy: go to Heavy folder: "cd Heavy"
+run "sumo -c I94_high-default-priority.sumocfg" 
+It will store all the output files in "Output-Default-Priority" folder 
+and detector files to "Detector-files" folder
+
